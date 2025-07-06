@@ -1,22 +1,31 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { isValidObjectId, Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { ConfigService } from '@nestjs/config';
 
 import { Pokemon } from './entities/pokemon.entity';
-//import { json } from 'stream/consumers';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
+import { paginationDto } from 'src/common/dto/pagination.dto';
+
 
 
 @Injectable()
 export class PokemonService {
 
-  constructor(
+  private defaultLimit: number;
 
+  constructor(
     @InjectModel( Pokemon.name )
     private readonly PokemonModel: Model<Pokemon>,
 
-  ) {}
+    private readonly configService: ConfigService
+  ) {
+     // console.log(process.env.DEFAULT_LIMIT);
+     // console.log( configService.getOrThrow('jwt-seed') )
+    this.defaultLimit = configService.get<number>('defaultLimit'); //En esta session no estoy utilizando "this." porque estoy dentro del constructor, si estoy fuera tengo que usarlo.
+    // console.log({defaultLimit}
+  }
 
 
   async create(createPokemonDto: CreatePokemonDto) {
@@ -32,11 +41,20 @@ export class PokemonService {
       this.handleExceptions( error );
     }
    
-   
+    
   }
+  //Return all pokemon
+  findAll( paginationDto: paginationDto ) {
 
-  findAll() {
-    return `This action returns all pokemon`;
+  const { limit = this.defaultLimit, offset = 0  } = paginationDto; //Here we use the distructurion of JavaScript
+
+    return this.PokemonModel.find()
+    .limit( limit ) //Que solo me traiga 5
+    .skip( offset ) //Que se salte los primeros 5
+    .sort({
+      no: 1   //Ordenar por el numero de forma acendente
+    })
+    .select('-__v') //Para no ver la columna ( v ) version
   }
 
  async findOne(term: string) {

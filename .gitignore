@@ -5,6 +5,9 @@
 
 /mongo
 
+#Las variables de entorno no son respardada en  git
+.env 
+
 # Logs
 logs
 *.log

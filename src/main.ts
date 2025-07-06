@@ -10,10 +10,15 @@ async function bootstrap() {
     app.useGlobalPipes(  
     new ValidationPipe({ 
     whitelist: true, 
-    forbidNonWhitelisted: true, 
+    forbidNonWhitelisted: true,
+    transform: true, //Esto es para permitir la conversion de string a number en mi DTO
+    transformOptions: {
+      enableImplicitConversion: true
+    } 
   }) 
 );
 
-  await app.listen(3000);//process.env.PORT ?? 3000);
+  await app.listen( process.env.PORT );//process.env.PORT ?? 3000); //Debemos de asegurar de poner esta variable **process.env.PORT**, es en donde el servio en las nubes nos asigna nuestro puerto 
+  console.log(`App running on port ${process.env.PORT}`);
 }
 bootstrap();

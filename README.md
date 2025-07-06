@@ -18,6 +18,19 @@ yarn add @nestjs/cli -g
 docker-compose up -d
 ```
 
+5. Levantar el servidor en nest - modo desarrollo.
+  ```
+   yarn start:dev
+  ```
+
+6. Rescontruit la base de datos con la semilla.
+```
+  http://localhost:3000/api/v2/seed
+```
+7. Clonar el archivo __.env.templete__ y renombrar la copia __.env__
+
+8. Llenar las variables de entorno definidas en el ```env```
+
 ## Stack usado
 * MongoDB
 * Nest
